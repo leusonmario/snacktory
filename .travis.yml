@@ -1,4 +1,25 @@
+
+sudo: required
 language: java
-notifications:
-  email:
-    - peathal@yahoo.de
+
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=HtmlFetcherIntegrationTest#testTwitpicGzipDoesNOTwork -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/snacktory/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "BDrWkdTGxAf5TR168QUjdaXIVngdO7Awv9U0lL1PntaFPB8C4gaUvAIE5Tu6RfR2f3CZOhUdI9PIGx49fG6BAg75RXEsTBIrUmJlD3+AjzDspffa7N4yu+TW/yaon/1zfypehtW8nEw3u2AGwb0GdM8G4W9oRDJXg4KF6vt/zlVcJDX7FLmQrNK5qIJ1NiHVtEg3DUNNUWp/BENIKLfZjVnt+F5p15jfm+/DyPzcyo5JhTOtThG1aGP3mAw4oEBmApax4ofT+TmUtCjhCLMTvMDk+Qkg6DWo9UauUmbZMhcNMzXpBEmx0ZrVikt2lavhYyE/GccYH4jAiwb5WJCvCuKO6Y5x58qscKsJkdhg9ATtXDVTkGQ6lZB3W6pH275UrboG9Iw1SkhMZyUdcrHIMnfuDgjFnjkfkzZK7Sr7k+I6DxTky6nMw0apVjZ5Nz+uNY5EACPTHB5shuKRtJxYE43NJcW7ylTiGkzJYPyKHrFOraYgkB81IoC+fStOLlcfkhMoD5v2epmbkyxEa0sdLOld6BQk0C36M+ptD3hsTY91J1rqbIpb549DCQM1C8T0BWZSq3oZ4CB7H98/FqqU9F0+R8PHRCbdaMnFxkKN03T8pCa+JJ8U08WfKvOiYfOhZjrH27x3UGqNFCv1P9xK3b1JX5SvR9OXJV7iOgmgpBY="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
